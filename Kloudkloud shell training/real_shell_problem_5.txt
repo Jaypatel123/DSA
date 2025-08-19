@@ -1,0 +1,53 @@
+Main TOPIC: set up PostgreSQL database server
+
+The Nautilus application development team has shared that they are planning to deploy one newly developed application on Nautilus infra in Stratos DC. The application uses PostgreSQL database, so as a pre-requisite we need to set up PostgreSQL database server as per requirements shared below:
+
+PostgreSQL database server is already installed on the Nautilus database server.
+
+a. Create a database user kodekloud_sam and set its password to dCV3szSGNA.
+
+b. Create a database kodekloud_db4 and grant full permissions to user kodekloud_sam on this database.
+
+Note: Please do not try to restart PostgreSQL server service.
+
+-------------------- SOLUTION --------------------
+||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+Step a — Login to PostgreSQL
+
+On the DB server (Stratos DB host):
+
+sudo -u postgres psql
+
+
+This switches to the postgres system user (default superuser for PostgreSQL) and opens the PostgreSQL shell.
+
+Step b — Create the user
+
+Inside the psql prompt:
+
+CREATE USER kodekloud_sam WITH PASSWORD 'dCV3szSGNA';
+
+Step c — Create the database
+CREATE DATABASE kodekloud_db4;
+
+Step d — Grant full permissions to the user
+GRANT ALL PRIVILEGES ON DATABASE kodekloud_db4 TO kodekloud_sam;
+
+Step e — Verify (optional)
+
+List databases:
+
+\l
+
+
+List users:
+
+\du
+
+
+Exit:
+
+\q
