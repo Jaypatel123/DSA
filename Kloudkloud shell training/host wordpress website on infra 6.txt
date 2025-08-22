@@ -18,4 +18,102 @@ e. Finally you should be able to access the website on LBR link, by clicking on 
 -------------------- SOLUTION --------------------
 ||||||||||||||||||||||||||||||||||||||||||||||||||
 
-solution
+a. Install Apache (httpd), PHP, and dependencies on all App hosts
+
+SSH into each App host (stapp01, stapp02, stapp03):
+
+# Install Apache + PHP + MySQL extension
+sudo yum install -y httpd php php-mysqlnd php-fpm php-cli
+
+
+Enable/start Apache:
+
+sudo systemctl enable httpd
+sudo systemctl start httpd
+
+b. Configure Apache to serve on port 8082
+
+Edit Apache config:
+
+sudo vi /etc/httpd/conf/httpd.conf
+
+
+Find:
+
+Listen 80
+
+
+Change to:
+
+Listen 8082
+
+
+Also check VirtualHost blocks (if any) and change :80 → :8082.
+
+Restart Apache:
+
+sudo systemctl restart httpd
+
+
+Verify:
+
+sudo ss -tulnp | grep httpd
+
+
+Should show it listening on 8082.
+
+c. Install/Configure MariaDB on DB Server
+
+On the DB Server:
+
+sudo yum install -y mariadb-server
+sudo systemctl enable mariadb
+sudo systemctl start mariadb
+
+d. Create database and user
+
+Log into MariaDB shell:
+
+sudo mysql -u root
+
+
+Run SQL commands:
+
+CREATE DATABASE kodekloud_db1;
+
+CREATE USER 'kodekloud_roy'@'%' IDENTIFIED BY 'ksH85UJjhb';
+
+GRANT ALL PRIVILEGES ON kodekloud_db1.* TO 'kodekloud_roy'@'%';
+
+FLUSH PRIVILEGES;
+EXIT;
+
+
+✅ % means user can connect from any host (needed since app servers will connect over the network).
+
+e. Verify connectivity from App Servers
+
+On one App server, test PHP-MySQL connection. Create a simple test file:
+
+sudo tee /var/www/html/index.php > /dev/null <<'PHP'
+<?php
+$servername = "stdb01";    // replace with DB Server hostname or IP
+$username = "kodekloud_roy";
+$password = "ksH85UJjhb";
+$dbname = "kodekloud_db1";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+echo "App is able to connect to the database using user kodekloud_roy";
+$conn->close();
+?>
+PHP
+
+f. Final Testing
+
+From the LBR (load balancer) or via the App button in the portal:
+
+curl http://<LBR_HOSTNAME_OR_IP>:8082/
