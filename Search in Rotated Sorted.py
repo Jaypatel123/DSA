@@ -49,3 +49,20 @@ class Solution:
                 else:
                     l = m + 1
         return -1
+    
+
+# class Solution:
+#     def search(self, nums: List[int], target: int) -> int:
+#         r, l = len(nums) - 1, 0
+#         while l <= r:
+#             m = (l + r) // 2
+#             if nums[m] > target: # 1 > 5
+#                 if nums[l] > target:
+#                     l = m + 1
+#                 else:
+#                     r = m - 1
+#             elif nums[m] < target:
+#                 l = m + 1
+#             elif: 
+#                 return m
+#         return -1
