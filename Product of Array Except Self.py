@@ -26,15 +26,29 @@
 # Solution O(n) space complexity and O(n) time complexity
 class Solution:
     def productExceptSelf(self, nums: List[int]) -> List[int]:
-        prefix = [1]
-        postfix = [1]
-        output = []
+        # Solution O(1) space complexity and O(n) time complexity
+        # prefix = [1]
+        # postfix = [1]
+        # output = []
 
-        for i in range(len(nums)):
-            prefix.append(prefix[-1] * nums[i])
-            postfix.append(nums[-i-1] * postfix[-1])
+        # for i in range(len(nums)):
+        #     prefix.append(prefix[-1] * nums[i])
+        #     postfix.append(nums[-i-1] * postfix[-1])
 
-        for i in range(len(nums)):
-            output.append(prefix[i] * postfix[-2 - i])
-
-        return output
+        # for i in range(len(nums)):
+        #     output.append(prefix[i] * postfix[-2 - i])
+        # return output
+        
+        # Solution O(1) space complexity and O(1) time complexity
+        prefix = 1
+        ans = [1]
+        for i in range(len(nums)-1):
+            prefix *= nums[i]
+            ans.append(prefix)
+        
+        postfix = 1
+        for j in range(len(nums) - 1, -1, -1):
+            ans[j] *= postfix
+            postfix *= nums[j]
+            
+        return ans
