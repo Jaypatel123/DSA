@@ -23,6 +23,7 @@
 # Follow up: Can you solve the problem in O(1) extra space complexity? (The output array does not count as extra space for space complexity analysis.)
 
 
+# Solution O(n) space complexity and O(n) time complexity
 class Solution:
     def productExceptSelf(self, nums: List[int]) -> List[int]:
         prefix = [1]
