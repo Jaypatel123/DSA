@@ -56,7 +56,17 @@ class Solution:
     def missingNumber(self, nums: List[int]) -> int:
         target = 0
         for i in range(len(nums) + 1):
-            target += i
+            target += i 
         for i in nums:
             target -= i
         return target 
+
+
+class Solution:
+    def missingNumber(self, nums: List[int]) -> int:
+        target = 0
+        for i in range(len(nums) + 1):
+            target += i      
+            if i < len(nums):
+                target -= nums[i]
+        return target
