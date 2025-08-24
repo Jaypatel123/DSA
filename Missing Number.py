@@ -70,3 +70,10 @@ class Solution:
             if i < len(nums):
                 target -= nums[i]
         return target
+
+class Solution:
+    def missingNumber(self, nums: List[int]) -> int:
+        target = 0
+        for i in range(1, len(nums) + 1):
+            target += (i - nums[i-1])
+        return target 
