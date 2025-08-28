@@ -39,5 +39,4 @@ class Solution:
         for j in range(len(new_s)//2):
             if new_s[j] != new_s[-j-1]:
                 return False
-            
         return True
