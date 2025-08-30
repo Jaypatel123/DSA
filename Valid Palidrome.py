@@ -28,7 +28,7 @@
 
 # 1 <= s.length <= 2 * 105
 # s consists only of printable ASCII characters.
-
+  # --------- not working solution ---------
 class Solution:
     def isPalindrome(self, s: str) -> bool:
         new_s = ""
