@@ -45,17 +45,29 @@
 
 # 1 <= s.length <= 104
 # s consists of parentheses only '()[]{}'.
+# class Solution:
+#     def isValid(self, s: str) -> bool:
+        # stack = []
+        # for i in s:
+        #     if i in {")","}","]"} and stack == []:
+        #         return False 
+        #     elif (i == ')' and stack[-1] == '(') or (i == '}' and stack[-1] == '{') or (i == ']' and stack[-1] == '['):
+        #         stack.pop()
+        #     else:
+        #         stack.append(i)
+        # return False if stack else True
 
+        ################################# optimized code
 class Solution:
     def isValid(self, s: str) -> bool:
         stack = []
-        for i in range(len(s)):
-            if (s[i] == '(') or (s[i] == '[') or (s[i] == '{'):
-                stack.append(s[i])
-            elif stack == [] and s[i] in ")}]":
-                return False 
-            elif (s[i] == ')' and stack[-1] == '(') or (s[i] == '}' and stack[-1] == '{') or (s[i] == ']' and stack[-1] == '['):
-                stack.pop()
+        closingtoopen = {")" : "(", "}" : "{", "]" : "["}
+        for i in s:
+            if i in closingtoopen:
+                if stack and stack[-1] == closingtoopen[i]:
+                    stack.pop()
+                else:
+                    return False
             else:
-                stack.append(s[i])
+                stack.append(i)
         return False if stack else True
