@@ -37,7 +37,6 @@ from collections import defaultdict
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         index_value = defaultdict()
-
         for i, v in enumerate(nums):
             if (target - v) in index_value:
                 return [index_value[target - v], i]
