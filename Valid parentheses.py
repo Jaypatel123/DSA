@@ -57,7 +57,7 @@
         #         stack.append(i)
         # return False if stack else True
 
-        ################################# optimized code
+        ################################# optimized code from neetcode
 class Solution:
     def isValid(self, s: str) -> bool:
         stack = []
