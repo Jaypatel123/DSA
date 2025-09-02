@@ -1,3 +1,4 @@
+
 # 242. Valid Anagram
 # Solved
 # Easy
@@ -51,3 +52,8 @@ class Solution:
             if hash_set[j] == 0:
                  del hash_set[j]
         return True
+    
+    
+        # in one line return the result , 
+        # Counter automatically count each character in the string and by comparing both gives boolean value 
+        return Counter(s) == Counter(t)
