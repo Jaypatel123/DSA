@@ -50,15 +50,28 @@ class Solution:
         # return ans   
 
         # I have used only one loop even though complexity is not good then the one above this 
-        l, r = 0, 0
-        uni_set = set()
+        # l, r = 0, 0
+        # uni_set = set()
+        # ans = 0
+        # while r < len(s):
+        #     if s[r] in uni_set:
+        #         uni_set.remove(s[l])
+        #         l += 1
+        #         continue
+        #     uni_set.add(s[r])
+        #     r += 1
+        #     ans = max(ans, len(uni_set))
+        # return ans
+
+        # combining hashmap and sliding window another optimized soluton
+        l = 0
+        unique_hash = {}
+        window = ""
         ans = 0
-        while r < len(s):
-            if s[r] in uni_set:
-                uni_set.remove(s[l])
-                l += 1
-                continue
-            uni_set.add(s[r])
-            r += 1
-            ans = max(ans, len(uni_set))
+        for r in range(len(s)):
+            if s[r] in window:
+                l = unique_hash[s[r]] + 1
+            window = s[l:r+1]
+            unique_hash[s[r]] = r
+            ans = max(len(window), ans)
         return ans
