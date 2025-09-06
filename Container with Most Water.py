@@ -28,6 +28,7 @@
 # 2 <= n <= 105
 # 0 <= height[i] <= 104
 
+# most optimized and easy to understand solution and code 
 class Solution:
     def maxArea(self, height: List[int]) -> int:
         l, r = 0, len(height) - 1
