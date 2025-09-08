@@ -33,10 +33,31 @@ class Solution:
     def isPalindrome(self, s: str) -> bool:
         new_s = ""
         for i in s:
-            if i.isalpha() or i.isnumeric():
+            if i.isalnum():
                 i = i.lower()
                 new_s += i
         for j in range(len(new_s)//2):
             if new_s[j] != new_s[-j-1]:
                 return False
         return True
+        
+        # alternative of next for loop can be shortened with   
+        # return False if new_s != new_s[::-1] else True   
+
+#  ---------------------------------------------------------
+        # memory efficient space O(1) solution and without using isalnum() function  
+        # l, r = 0, len(s) - 1
+        # while l < r:
+        #     while l < r and not self.alphaNum(s[l]):
+        #         l += 1
+        #     while r > l and not self.alphaNum(s[r]):
+        #         r -= 1
+        #     if s[l].lower() != s[r].lower():
+        #         return False
+        #     l += 1
+        #     r -= 1
+        # return True
+    # def alphaNum(self, c):
+    #     return (((ord('A') <= ord(c) <= ord('Z')) or 
+    #             (ord('a') <= ord(c) <= ord('z')) or 
+    #             (ord('0') <= ord(c) <= ord('9')))
