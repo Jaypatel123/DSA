@@ -30,6 +30,7 @@
 
 # 1 <= n <= 231 - 1
 
+# my solution
 class Solution:
     def isHappy(self, n: int) -> bool:
         temp_set = {n}
