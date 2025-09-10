@@ -43,9 +43,22 @@
 
 class Solution:
     def removeElement(self, nums: List[int], val: int) -> int:
+        # solved by own two pointers with great time complexity O(n) and space complexity O(1)
+        # l = 0
+        # for r in range(len(nums)):
+        #     if nums[l] != val:
+        #         l += 1
+        #     elif nums[r] != val:
+        #         nums[l] = nums[r]
+        #         nums[r] = val
+        #         l += 1
+        # return l
+        
+        # neetcode solution
         l = 0
         for r in range(len(nums)):
             if nums[r] != val:
                 nums[l] = nums[r]
                 l += 1
         return l
+    
