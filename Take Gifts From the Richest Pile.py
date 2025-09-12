@@ -54,3 +54,16 @@ class Solution:
         return -sum(list_gifts)
         
         
+# import heapq
+# class Solution:
+#     def pickGifts(self, gifts: List[int], k: int) -> int:
+#         list_gifts = []
+
+#         for i in gifts:
+#             i = -i
+#             heapq.heappush(list_gifts, i)
+
+#         for _ in range(k):
+#             pop_val = -heapq.heappop(list_gifts)
+#             heapq.heappush(list_gifts, -int(pop_val ** (1/2)))
+#         return -sum(list_gifts)
