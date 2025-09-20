@@ -9,4 +9,5 @@ Note: You can find the infrastructure details by clicking on the Details of all 
 -------- Solution ---------
 
 
+
 sudo adduser -s /sbin/nologin/
