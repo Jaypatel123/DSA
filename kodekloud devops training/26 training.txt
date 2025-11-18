@@ -21,4 +21,4 @@ sudo git add .
 
 sudo git commit -am "added remote point"
 
-sudo git push
+sudo git push dev_apps
