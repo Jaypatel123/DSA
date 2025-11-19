@@ -1,0 +1,20 @@
+The Nautilus application development team was working on a git repository /usr/src/kodekloudrepos/games present on Storage server in Stratos DC. One of the developers stashed some in-progress changes in this repository, but now they want to restore some of the stashed changes. Find below more details to accomplish this task:
+
+
+
+Look for the stashed changes under /usr/src/kodekloudrepos/games git repository, and restore the stash with stash@{1} identifier. Further, commit and push your changes to the origin.
+
+
+
+######## solution down ######
+
+
+cd /usr/src/kodekloudrepos/games
+
+sudo git stash list
+
+sudo git stash apply stash@{1}
+
+sudo git commit -am "added new changes"
+
+sudo git push
