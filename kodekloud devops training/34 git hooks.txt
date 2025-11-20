@@ -12,32 +12,61 @@ Note: Perform this task using the natasha user, and ensure the repository or exi
 
 
 ######## solution down ######
-cd /usr/src/kodekloudrepos/apps
+
+cd /usr/src/kodekloudrepos/apps/
+
 git checkout master
-cd /usr/src/kodekloudrepos/apps/.git/hooks
-
-sudo vi post-update.sample
-        while read oldrev newrev refname
-        do
-
-                if ["$refname" = "refs/heads/master"]; then
-
-                        Date=$(date +%Y-%M-%S)
-                        tag="release-$Date"
-
-                        git tag -a "$tag" "newrev" -m "Automated release on update of master branch"
-                        git push origin "$tag"
-                fi
-        done
-
-        echo "Post-update hook executed at $(date)" >> /tmp/hook.log
-
-        echo "Hook triggered for ref: $refname"
-
-mv post-update.sample post-update
-chmod +x post-update
-
-cd /usr/src/kodekloudrepos/apps
-git status
 
 git merge feature
+
+cd /opt/apps.git/hooks
+
+mv post-update.sample post-update
+
+vi post-update 
+            #!/usr/bin/bash
+            #
+            # An example hook script to prepare a packed repository for use over
+            # dumb transports.
+            #
+            # To enable this hook, rename this file to "post-update".
+
+
+            for ref in "$@"; do
+                # Only create a release tag if master branch was updated
+                if [ "$ref" = "refs/heads/master" ]; then
+                    # Generate a tag name based on today's date
+                    TAG_NAME="release-$(date +%Y-%m-%d)"
+
+                    # Create an annotated tag pointing to the new commit
+                    git tag -a "$TAG_NAME" -m "Automated release for TODAY" "$ref"
+                    echo "Remote: Tag created."
+                    echo "---------------------------------------------"
+                    git push origin "$TAG_NAME"
+                fi
+            done
+            exec git update-server-info
+
+cd /usr/src/kodekloudrepos/apps/
+
+git push
+
+cd /opt/apps.git
+
+git tag ##### verify if you are able to see the tag if not try below
+
+
+cd /usr/src/kodekloudrepos/apps/
+
+echo "testing first" >> test.txt
+
+git add .
+
+git config --global user.name "natasha"
+git commit -am "adding first test"
+
+git push
+
+cd /opt/apps.git
+
+git tag
