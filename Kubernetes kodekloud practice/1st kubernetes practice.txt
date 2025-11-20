@@ -6,7 +6,21 @@ Set the app label to httpd_app, and name the container as httpd-container.
 
 Note: The kubectl utility on jump_host is configured to operate with the Kubernetes cluster.
 
--------------------- SOLUTION --------------------
+-------------------- SOLUTION down --------------------
 ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+kubectl run pod-nginx --image=nginx:latest --labels="app=nginx_app" -o yaml > pod-nginx.yaml
+
+kubectl delete pod pod-nginx
+
+#### now change the name of the container which is by default given same as pod name
+
+vi pod-nginx.yaml
+    spec:
+        containers:
+            - name: nginx-container
+
+kubectl apply -f pod-nginx.yaml
 
 
