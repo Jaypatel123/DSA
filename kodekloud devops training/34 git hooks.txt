@@ -24,25 +24,16 @@ cd /opt/apps.git/hooks
 mv post-update.sample post-update
 
 vi post-update 
+
             #!/usr/bin/bash
-            #
-            # An example hook script to prepare a packed repository for use over
-            # dumb transports.
-            #
-            # To enable this hook, rename this file to "post-update".
-
-
             for ref in "$@"; do
-                # Only create a release tag if master branch was updated
                 if [ "$ref" = "refs/heads/master" ]; then
-                    # Generate a tag name based on today's date
-                    TAG_NAME="release-$(date +%Y-%m-%d)"
-
-                    # Create an annotated tag pointing to the new commit
+                    git checkout master
+                    TAG_NAME="release-$(TZ="America/Chicago" date +%F)"
                     git tag -a "$TAG_NAME" -m "Automated release for TODAY" "$ref"
                     echo "Remote: Tag created."
                     echo "---------------------------------------------"
-                    git push origin "$TAG_NAME"
+                    #git push origin "$TAG_NAME"
                 fi
             done
             exec git update-server-info
