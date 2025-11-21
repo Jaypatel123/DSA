@@ -13,11 +13,9 @@ Note: Perform this task using the natasha user, and ensure the repository or exi
 
 ######## solution down ######
 
-cd /usr/src/kodekloudrepos/apps/
+ssh natasha@172.16.238.15
 
-git checkout master
-
-git merge feature
+Password: Bl@kW
 
 cd /opt/apps.git/hooks
 
@@ -25,27 +23,38 @@ mv post-update.sample post-update
 
 vi post-update 
 
-            #!/usr/bin/bash
-            for ref in "$@"; do
-                if [ "$ref" = "refs/heads/master" ]; then
-                    git checkout master
-                    TAG_NAME="release-$(TZ="America/Chicago" date +%F)"
-                    git tag -a "$TAG_NAME" -m "Automated release for TODAY" "$ref"
-                    echo "Remote: Tag created."
-                    echo "---------------------------------------------"
-                    #git push origin "$TAG_NAME"
-                fi
-            done
-            exec git update-server-info
+        #!/usr/bin/bash
+        for ref in "$@"; do
+            if [ "$ref" = "refs/heads/master" ]; then
+                git checkout master
+                TAG_NAME="release-$(TZ="America/Chicago" date +%F)"
+                git tag -a "$TAG_NAME" -m "Automated release for TODAY" "$ref"
+                echo "Remote: Tag created."
+                echo "---------------------------------------------"
+                #git push origin "$TAG_NAME"
+            fi
+        done
+        exec git update-server-info
 
 cd /usr/src/kodekloudrepos/apps/
+
+git checkout master
+
+git merge feature
+
+git config --global user.name "natasha"
 
 git push
 
 cd /opt/apps.git
 
-git tag ##### verify if you are able to see the tag if not try below
+git tag 
 
+
+
+##### IF NOT ABLE TO SEE TAG #####
+
+#### then let's again try to create master branch push operation
 
 cd /usr/src/kodekloudrepos/apps/
 
@@ -54,6 +63,7 @@ echo "testing first" >> test.txt
 git add .
 
 git config --global user.name "natasha"
+
 git commit -am "adding first test"
 
 git push
