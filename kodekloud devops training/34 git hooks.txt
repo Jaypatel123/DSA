@@ -71,3 +71,45 @@ git push
 cd /opt/apps.git
 
 git tag
+
+
+
+
+
+    1  cd /usr/src/kodekloudrepos/demo/
+    2  git checkout mas
+    3  git checkout master
+    4  git merge feature
+    5  vi /opt/demo.git/hooks/post-update.sample 
+    6  git push
+    7  git tag
+    8  vi /opt/demo.git/hooks/post-update.sample 
+    9  git tag /opt/demo.git/
+   10  git tag /opt/demo.git
+   11  cd /opt/demo.git/
+   12  git tag
+   13  cd /usr/src/kodekloudrepos/demo/
+   14  echo "test" >> test.txt
+   15  git add .
+   16  git commit -am "adding test"
+   17  git config --global user.email "ststor01.stratos.xfusioncorp.com"
+   18  git commit -am "adding test"
+   19  git config --global user.name "natasha"
+   20  git commit -am "adding test"
+   21  git push
+   22  vi /opt/demo.git/hooks/post-update.sample 
+   23  mv /opt/demo.git/hooks/post-update.sample /opt/demo.git/hooks/post-update
+   24  echo "test 2" >> test2.txt
+   25  git add .
+   26  git commit -am "adding second test"
+   27  git push
+   28  history
+
+
+
+
+
+   TAG_NAME="release-$(TZ="America/Chicago" date +%F)"
+                git tag -a "$TAG_NAME" -m "Released at: $TAGNAME"
+                echo "Remote: Tag created $TAG_NAME"
+                echo "---------------------------------------------"
