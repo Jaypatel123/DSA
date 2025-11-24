@@ -1,0 +1,26 @@
+. Use httpd (preferably latest tag) image for container and make sure container is named as httpd; you can use any name for service.
+
+
+c. Map 80 number port of container with port 8084 of docker host.
+
+
+d. Map container's /usr/local/apache2/htdocs volume with /opt/dba volume of docker host which is already there. (please do not modify any data within these locations).
+
+
+##### solution #####
+
+version: "3.9"
+
+services:
+  web:
+    container_name: httpd
+    image: httpd:latest
+    ports:
+      - "8084:80" # mapping Host-port:container port
+    volumes:
+      - type: bind
+        source: /opt/devops
+        target: /usr/local/apache2/htdocs
+      # we can map volumn in one line as below  
+      #- /opt/devops:/usr/local/apache2/htdocs
+    restart: unless-stopped
