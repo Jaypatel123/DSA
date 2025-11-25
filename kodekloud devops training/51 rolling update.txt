@@ -10,17 +10,13 @@ Note: The kubectl utility on jump_host is set up to operate with the Kubernetes 
 
 ###### solution down ######
 
-
+### get the name of the container where image is required to be changes
+kubectl edit deployment nginx-deployment
 
 kubectl set image deployment nginx-deployment nginx-container=nginx:1.17
 
-kubectl edit deployment nginx-deployment
-
 kubectl rollout status deployment nginx-deployment 
-
 
 ## if need to roll back to previous version
     
     kubectl rollout undo deployment nginx-deployment 
-
-
