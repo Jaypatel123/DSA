@@ -11,4 +11,4 @@ Verify that the website is accessible on host port 8080 on App Server 1. Confirm
 ###### Solution down ########
 
 
-docker run -p 8080:80 -v /var/www/html:/usr/local/apache2/htdocs httpd
+docker run --name=nautilus -p 8080:80 -v /var/www/html:/usr/local/apache2/htdocs httpd
