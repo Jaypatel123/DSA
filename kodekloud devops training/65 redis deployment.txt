@@ -31,8 +31,8 @@ vi configmap.yml
     metadata:
         name: my-redis-config
     data:
-    redis.conf: |
-        maxmemory 2mb
+        redis.conf: |
+            maxmemory 2mb
 
 
 vi deployment.yml  
