@@ -43,24 +43,24 @@ create a credential of DB server
 add ssh access in the system of this created crediatial 
 
 create a job > database-backup > Build periodically > 
+    
     */10 * * * * 
 
 Build Steps > Add build step > Execute shell script on remote host using ssh > 
 
+    echo "Sp!dy" | sudo -S yum install -y sshpass
 
-echo "Sp!dy" | sudo -S yum install -y sshpass
+    DB_NAME="kodekloud_db01"
+    DB_USER="kodekloud_roy"
+    DB_PASS="asdfgdsd"
+    DATE=$(date +%F)
 
-DB_NAME="kodekloud_db01"
-DB_USER="kodekloud_roy"
-DB_PASS="asdfgdsd"
-DATE=$(date +%F)
+    mkdir -p /tmp/db_backup
 
-mkdir -p /tmp/db_backup
+    mysqldump -u $DB_USER -p$DB_PASS $DB_NAME > /tmp/db_backup/db_$(date +%F).sql
 
-mysqldump -u $DB_USER -p$DB_PASS $DB_NAME > /tmp/db_backup/db_$(date +%F).sql
+    ls -al /tmp/db_backup
 
-ls -al /tmp/db_backup
+    sshpass -p "H@wk3y3" scp -o StrictHostKeyChecking=no /tmp/db_backup/*.sql clint@stbkp01:/home/clint/db_backups/
 
-sshpass -p "H@wk3y3" scp -o StrictHostKeyChecking=no /tmp/db_backup/*.sql clint@stbkp01:/home/clint/db_backups/
-
-rm -rf /tmp/db_backup
+    rm -rf /tmp/db_backup
