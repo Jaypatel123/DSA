@@ -30,3 +30,40 @@ Note:
 
 
 2. For these kind of scenarios requiring changes to be done in a web UI, please take screenshots so that you can share it with us for review in case your task is marked incomplete. You may also consider using a screen recording software such as loom.com to record and share your work.
+
+
+#### Solution down ######
+
+login into jenkins with given password
+
+install plugins ssh crediatial, ssh build agent, ssh
+
+install java into all node servers (tony, steve, banner):
+    > sudo yum install java-21-openjdk -y
+
+add all three app server in the crediantial
+    Manage jenkins > credentials > system > Global credentials > Add credentials
+
+add known_hosts to the Jenkins master
+    -> ssh into jenkins@jenkins master
+    -> mkdir -p ~/.ssh
+    -> chmod 700 ~/.ssh
+    -> touch ~/.ssh/known_hosts
+    -> chmod 644 ~/.ssh/known_hosts
+    -> ssh into tony,steve,banner servers using jenkins user: jenkins@172.16.238.10 (entering password is not required)
+    -> check all 3 hosts are added run > cat ~/.ssh/known_hosts
+
+add nodes for all app server:
+    -> Manage jenkins > Nodes > add node
+    -> Give Name > permanent node 
+    -> Remote root directory
+    -> Labels
+    -> launch Method > Launch agent via ssh > Host > select credentials
+    -> save
+
+Test Nodes:
+    -> Create a freestyle Job with any name
+    -> select > "Restrict where this project can be run" > select: "stapp01"
+    -> Build step > execute shell > echo "Hello from Agent"
+    
+Build job, it should be successfull
