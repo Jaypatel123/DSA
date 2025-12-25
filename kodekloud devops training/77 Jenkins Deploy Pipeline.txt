@@ -36,3 +36,39 @@ For these kind of scenarios requiring changes to be done in a web UI, please tak
 
 ######## solution down ########
 
+install plugins ssh, SSH Credentials, SSH Build Agents
+
+add crediantials natasha
+
+Install Java on natasha storage server and give access to the natasha user and group
+    -> sudo yum install java-21-openjdk -y
+    -> sudo chown -R natasha:natasha /var/www/html ## ls -al /var/www/html
+
+add known_hosts to the Jenkins master node
+    -> ssh into jenkins@jenkins 
+    -> mkdir -p ~/.ssh
+    -> chmod 700 ~/.ssh
+    -> touch ~/.ssh/known_hosts
+    -> chmod 644 ~/.ssh/known_hosts
+    -> ssh into tony,steve,banner servers using jenkins user: jenkins@172.16.238.10 (entering password is not required)
+    -> cat ~/.ssh/known_hosts -> check all 3 hosts are added run
+
+Add agent:
+        name: Storage Server
+        remote dir: /var/www/html
+        label: ststor01
+        Launch Method: SSH
+        host: ststor01
+        credential: natasha/pass
+        host key: no verification
+        Save
+
+    
+
+
+
+
+
+
+
+
