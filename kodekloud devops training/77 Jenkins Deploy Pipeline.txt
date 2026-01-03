@@ -36,7 +36,7 @@ For these kind of scenarios requiring changes to be done in a web UI, please tak
 
 ######## solution down ########
 
-install plugins ssh, SSH Credentials, SSH Build Agents
+install plugins ssh, SSH Credentials, SSH Build Agents, Pipeline
 
 add crediantials natasha
 
@@ -51,9 +51,9 @@ add known_hosts to the Jenkins master node
     -> touch ~/.ssh/known_hosts
     -> chmod 644 ~/.ssh/known_hosts
         add known_hosts agents natasha (database storage) to jenkins master
-            -> ssh jenkins@172.16.238.15
-    -> cat ~/.ssh/known_hosts -> check all 3 hosts are added run
-
+            -> ssh jenkins@172.16.238.15 ( Password entering is not required )
+    -> cat ~/.ssh/known_hosts -> check known hosts entries 
+    
 Add agent:
         name: Storage Server
         remote dir: /var/www/html
@@ -62,6 +62,27 @@ Add agent:
         host: ststor01
         credential: natasha/pass
         host key: no verification
-        Save
+    Save
 
-    
+Add Job:
+    select pipeline 
+        ### Write below script in script section
+        pipeline {
+            agent { label 'ststor01' }
+            stages {
+                stage('Deploy') {
+                    steps {
+                        script {
+                            sh '''
+                                rm -rf /tmp/web_app
+                                git clone http://git.stratos.xfusioncorp.com/sarah/web_app.git /tmp/web_app
+                                ls -la /tmp/web_app
+                                echo 'Bl@kW' | sudo -S rm -rf /var/www/html/*.html
+                                echo 'Bl@kW' | sudo -S cp -r /tmp/web_app/* /var/www/html/
+                                rm -rf /tmp/web_app
+                            '''
+                        }
+                    }
+                }
+            }
+        }
