@@ -17,10 +17,14 @@ We have already cloned repository on Storage Server under /var/www/html.
 Apache is already installed on all app Servers its running on port 8080.
 
 
-Create a Jenkins pipeline job named nautilus-webapp-job (it must not be a Multibranch pipeline) and configure it to:
+Create a Jenkins pipeline job named devops-webapp-job (it must not be a Multibranch pipeline) and configure it to:
 
 
-Deploy the code from web_app repository under /var/www/html on Storage Server, as this location is already mounted to the document root /var/www/html of app servers. The pipeline should have a single stage named Deploy ( which is case sensitive ) to accomplish the deployment.
+Add a string parameter named BRANCH.
+
+It should conditionally deploy the code from web_app repository under /var/www/html on Storage Server, as this location is already mounted to the document root /var/www/html of app servers. The pipeline should have a single stage named Deploy ( which is case sensitive ) to accomplish the deployment.
+
+The pipeline should be conditional, if the value master is passed to the BRANCH parameter then it must deploy the master branch, on the other hand if the value feature is passed to the BRANCH parameter then it must deploy the feature branch.
 
 LB server is already configured. You should be able to see the latest changes you made by clicking on the App button. Please make sure the required content is loading on the main URL https://<LBR-URL> i.e there should not be a sub-directory like https://<LBR-URL>/web_app etc.
 
@@ -34,7 +38,9 @@ You might need to install some plugins and restart Jenkins service. So, we recom
 For these kind of scenarios requiring changes to be done in a web UI, please take screenshots so that you can share it with us for review in case your task is marked incomplete. You may also consider using a screen recording software such as loom.com to record and share your work.
 
 
-######## solution down ########
+
+############### Solution ##############
+
 
 install plugins ssh, SSH Credentials, SSH Build Agents, Pipeline
 
@@ -64,25 +70,40 @@ Add agent:
         host key: no verification
     Save
 
-Add Job:
-    select pipeline 
-        ### Write below script in script section
-        pipeline {
-            agent { label 'ststor01' }
-            stages {
-                stage('Deploy') {
-                    steps {
-                        script {
-                            sh '''
-                                rm -rf /tmp/web_app
-                                git clone http://git.stratos.xfusioncorp.com/sarah/web_app.git /tmp/web_app
-                                ls -la /tmp/web_app
-                                echo 'Bl@kW' | sudo -S rm -rf /var/www/html/*.html
-                                echo 'Bl@kW' | sudo -S cp -r /tmp/web_app/* /var/www/html/
-                                rm -rf /tmp/web_app
-                            '''
-                        }
-                    }
+
+jenkins pipeline:
+
+
+pipeline {
+    agent { label 'ststor01' }
+    stages {
+        stage('Deploy on development'){
+            when {   
+                expression { params.BRANCH == 'feature' }
+            }
+            steps {
+                script {
+                    sh '''
+                        cd /var/www/html
+                        git checkout feature
+                        git pull
+                    '''
                 }
             }
         }
+        stage('Deploy on production'){
+            when {
+                expression { params.BRANCH == 'master' }
+            }
+            steps {
+                script {
+                    sh '''
+                        cd /var/www/html
+                        git checkout master
+                        git pull
+                    '''
+                }
+            }
+        }
+    }
+}
