@@ -1,7 +1,6 @@
 The development team of xFusionCorp Industries is working on to develop a new static website and they are planning to deploy the same on Nautilus App Servers using Jenkins pipeline. They have shared their requirements with the DevOps team and accordingly we need to create a Jenkins pipeline job. Please find below more details about the task:
 
 
-
 Click on the Jenkins button on the top bar to access the Jenkins UI. Login using username admin and password Adm!n321.
 
 
@@ -107,3 +106,4 @@ pipeline {
         }
     }
 }
+
