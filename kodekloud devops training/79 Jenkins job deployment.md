@@ -41,8 +41,14 @@ Add all app servers credentials steve, banner, tony and natasha
 
 add ssh in setting for steve, banner and tony
 
+Create a Job to install httpd and changing the apache port to 8080
+    Job> Name: httpd > FreeStyle > 
+        1) echo "Ir0nM@n" | sudo -S yum install httpd -y
+        2) sudo sed -i 's/^Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
+
+
 Install Java on natasha storage server and give access to the natasha user and group
-    -> sudo yum install java-21-openjdk -y
+    -> echo "Bl@kW" | sudo -S yum install java-21-openjdk -y
     -> sudo chown -R natasha:natasha /var/www/html
 
 
@@ -68,7 +74,10 @@ add natasha agent/Node to run the job
     Save
 
 
+Httpd scripts
+    1) echo "Ir0nM@n" | sudo -S yum install httpd
+    2) 
+
 Jenkins script:
 
-    b9a9da409ecd58884df8fe1d0a74e54e1544378d
 
