@@ -45,6 +45,7 @@ Install Java on natasha storage server and give access to the natasha user and g
     -> sudo yum install java-21-openjdk -y
     -> sudo chown -R natasha:natasha /var/www/html
 
+
 add known_hosts to the Jenkins master node
     -> ssh into jenkins@jenkins
     -> mkdir -p ~/.ssh
@@ -66,5 +67,8 @@ add natasha agent/Node to run the job
         host key: no verification
     Save
 
+
 Jenkins script:
+
+    b9a9da409ecd58884df8fe1d0a74e54e1544378d
 
