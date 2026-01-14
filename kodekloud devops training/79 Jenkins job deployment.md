@@ -39,45 +39,43 @@ Install jenkins plugins ssh, SSH Credentials, SSH Build Agents, Pipeline, git, g
 
 Add all app servers credentials steve, banner, tony and natasha
 
-add ssh in setting for steve, banner and tony
+add ssh access to all three servers steve, banner and tony
+    manage Jenkins > system > SSH remote hosts > SSH sites > add hostname, Port 22 & attach credentials for all three servers
 
 Create a Job to install httpd and changing the apache port to 8080
-    Job> Name: httpd > FreeStyle > 
-        1) echo "Ir0nM@n" | sudo -S yum install httpd -y
-        2) sudo sed -i 's/^Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
+    Job> Name: httpd > FreeStyle > Build Steps > open three seperate "Execute shell script on remote host using ssh" > for all three select tony, steve and banner in SSH sites > 
+        First script
+            echo "Ir0nM@n" | sudo -S yum install httpd -y
+            echo "Ir0nM@n" | sudo -S sed -i 's/^Listen[[:space:]]\+[0-9]\+/Listen 8080/' /etc/httpd/conf/httpd.conf
+            cat /etc/httpd/conf/httpd.conf | grep Listen
+            echo "Ir0nM@n" | sudo -S systemctl start httpd
+            echo "Ir0nM@n" | sudo -S systemctl enable httpd
+            echo "Ir0nM@n" | sudo -S systemctl status httpd 
+        
+        Second script
+            echo "Am3ric@" | sudo -S yum install httpd -y
+            echo "Am3ric@" | sudo -S sed -i 's/^Listen[[:space:]]\+[0-9]\+/Listen 8080/' /etc/httpd/conf/httpd.conf
+            cat /etc/httpd/conf/httpd.conf | grep Listen
+            echo "Am3ric@" | sudo -S systemctl start httpd
+            echo "Am3ric@" | sudo -S systemctl enable httpd
+            echo "Am3ric@" | sudo -S systemctl status httpd
 
+        Third script
+            echo "BigGr33n" | sudo -S yum install httpd -y
+            echo "BigGr33n" | sudo -S sed -i 's/^Listen[[:space:]]\+[0-9]\+/Listen 8080/' /etc/httpd/conf/httpd.conf
+            cat /etc/httpd/conf/httpd.conf | grep Listen
+            echo "BigGr33n" | sudo -S systemctl start httpd
+            echo "BigGr33n" | sudo -S systemctl enable httpd
+            echo "BigGr33n" | sudo -S systemctl status httpd
 
-Install Java on natasha storage server and give access to the natasha user and group
-    -> echo "Bl@kW" | sudo -S yum install java-21-openjdk -y
-    -> sudo chown -R natasha:natasha /var/www/html
+create a Freestyle job
+    home page > new Item > name: nautilus-app-deployment > freestyle > select git add repo from gitia > *master
+    check mark "GitHub hook trigger for GITScm polling"
 
-
-add known_hosts to the Jenkins master node
-    -> ssh into jenkins@jenkins
-    -> mkdir -p ~/.ssh
-    -> chmod 700 ~/.ssh
-    -> touch ~/.ssh/known_hosts
-    -> chmod 644 ~/.ssh/known_hosts
-        add known_hosts agents natasha (database storage) to jenkins master
-            -> ssh jenkins@172.16.238.15 ( Password entering is not required )
-    -> cat ~/.ssh/known_hosts -> check known hosts entries 
-
-
-add natasha agent/Node to run the job 
-        name: Storage Server
-        remote dir: /var/www/html
-        label: ststor01
-        Launch Method: SSH
-        host: ststor01
-        credential: natasha/pass
-        host key: no verification
-    Save
-
-
-Httpd scripts
-    1) echo "Ir0nM@n" | sudo -S yum install httpd
-    2) 
-
-Jenkins script:
-
+    echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
+    echo "Bl@kW" | sudo -S git clone -b master http://git.stratos.xfusioncorp.com/sarah/web.git /tmp/web-app
+    echo "Bl@kW" | sudo -S chown -R sarah:sarah /tmp/web-app
+    echo "Bl@kW" | sudo -S rm -rf /var/www/html/*
+    echo "Bl@kW" | sudo -S cp /tmp/web-app /var/www/html/
+    echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
 
