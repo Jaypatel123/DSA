@@ -69,13 +69,16 @@ Create a Job to install httpd and changing the apache port to 8080
             echo "BigGr33n" | sudo -S systemctl status httpd
 
 create a Freestyle job
-    home page > new Item > name: nautilus-app-deployment > freestyle > select git add repo from gitia > *master
-    check mark "GitHub hook trigger for GITScm polling"
+    home page > new Item > name: nautilus-app-deployment > freestyle > select git add repo from gitia > check mark "GitHub hook trigger for GITScm polling"
 
-    echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
-    echo "Bl@kW" | sudo -S git clone -b master http://git.stratos.xfusioncorp.com/sarah/web.git /tmp/web-app
-    echo "Bl@kW" | sudo -S chown -R sarah:sarah /tmp/web-app
-    echo "Bl@kW" | sudo -S rm -rf /var/www/html/*
-    echo "Bl@kW" | sudo -S cp /tmp/web-app /var/www/html/
-    echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
+    Build Steps > Execute shell script on remote host using ssh > add below script
+        
+        echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
+        echo "Bl@kW" | sudo -S git clone -b master http://git.stratos.xfusioncorp.com/sarah/web.git /tmp/web-app
+        echo "Bl@kW" | sudo -S chown -R sarah:sarah /tmp/web-app
+        echo "Bl@kW" | sudo -S rm -rf /var/www/html/*.html
+        echo "Bl@kW" | sudo -S cp /tmp/web-app/*.html /var/www/html/
+        echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
 
+    on the github/Gitia
+        go to repo setting > webhooks > Target: url http://jenkins.stratos.xfusioncorp.com:8080/github-webhook/
