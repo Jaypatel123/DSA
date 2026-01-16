@@ -75,9 +75,9 @@ create a Freestyle job
         
         echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
         echo "Bl@kW" | sudo -S git clone -b master http://git.stratos.xfusioncorp.com/sarah/web.git /tmp/web-app
-        echo "Bl@kW" | sudo -S chown -R sarah:sarah /tmp/web-app
         echo "Bl@kW" | sudo -S rm -rf /var/www/html/*.html
         echo "Bl@kW" | sudo -S cp /tmp/web-app/*.html /var/www/html/
+        echo "Bl@kW" | sudo -S chown -R sarah:sarah /var/www/html/
         echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
 
     on the github/Gitia
