@@ -17,3 +17,20 @@ To display or hide the terminal of the AWS client machine, you can use the expan
 
 #### Solution ####
 
+# create a key
+from kodekloud console > run command
+    > cd .ssh
+    > ssh-keygen -t ed25519 -C "your-email.com"
+    > cat id_ed25519.pub
+    copy entire key
+
+create a instance using a key-pair > from your local machine terminal log into instance > run command
+    > sudo su -
+    > cd .ssh/
+    > vi authorized_keys
+    paste the key in the next line
+    save
+    
+
+
+
