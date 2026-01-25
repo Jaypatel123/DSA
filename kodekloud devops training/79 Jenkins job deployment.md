@@ -35,9 +35,9 @@ Note:
 
 ######## Solution ########
 
-Install jenkins plugins ssh, SSH Credentials, SSH Build Agents, Pipeline, git, github
+Install jenkins plugins ssh, SSH Credentials, SSH Build Agents, Pipeline, git, github, gitea, 
 
-Add all app servers credentials steve, banner, tony and natasha
+Add all app servers credentials steve, banner, tony and natasha,
 
 add ssh access to all three servers steve, banner and tony
     manage Jenkins > system > SSH remote hosts > SSH sites > add hostname, Port 22 & attach credentials for all three servers
