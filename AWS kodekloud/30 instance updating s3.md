@@ -22,5 +22,25 @@ open vpc > create subnet:
                     ip: 10.1.2.0/24
 open vpc > attach public-rt to devops-pub-subnet
 
-open EC2 > security group > locate private instance security group > 
-open EC2 > launch instance > 
+Open EC2 > launch instance > 
+            name: devops-nat-instance
+            ami: amazon
+            instance type: t2.nano
+            vpc: devops-vpc
+            subnet: devops-pub-subnet
+            Auto-assign-ip: Enable
+            security group: 
+                source: 0.0.0.0
+                destination: anywhere
+    launch instance
+
+open ec2 > security group > select private instance security group > attach rule >
+                                                                    source: 0.0.0.0
+                                                                    destination: custom
+                                                                        select: public instance security group
+
+open ec2 > security group > select public instance security group > attach rule >
+                                                                    source: 0.0.0.0
+                                                                    destination: custom
+                                                                        select: private instance security group                                                              
+
