@@ -16,7 +16,7 @@ After the configuration, verify that the test file devops-test.txt appears in th
 
 
 Open VPC > create internet gateway > attach it to vpc
-open vpc > create route table > attach internet-gateway and name route devops-public-rt
+open vpc > create route table > name > devops vpc > attach internet-gateway and name route devops-public-rt
 open vpc > create subnet:
                     name: devops-pub-subnet
                     availability zone: us-east-1a (same as private subnet availability zone)
