@@ -16,16 +16,20 @@ After the configuration, verify that the test file devops-test.txt appears in th
 
 
 Open VPC > create internet gateway > attach it to vpc
-open vpc > create route table > attach internet-gateway and name route public-rt
+open vpc > create route table > attach internet-gateway and name route devops-public-rt
 open vpc > create subnet:
                     name: devops-pub-subnet
-                    ip: 10.1.2.0/24
+                    availability zone: us-east-1a (same as private subnet availability zone)
+                    CIDR ip: 10.1.2.0/24
+open vpc > route table > open: devops-public-rt > subnet assocations > Edit subnet associations > select devops-pub-subnet > save
+
+                    
 open vpc > attach public-rt to devops-pub-subnet
 
 Open EC2 > launch instance > 
             name: devops-nat-instance
             ami: amazon
-            instance type: t2.nano
+            instance type: t2.micro
             vpc: devops-vpc
             subnet: devops-pub-subnet
             Auto-assign-ip: Enable
