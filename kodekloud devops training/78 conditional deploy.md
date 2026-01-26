@@ -46,7 +46,7 @@ install plugins ssh, SSH Credentials, SSH Build Agents, Pipeline
 add crediantials natasha
 
 Install Java on natasha storage server and give access to the natasha user and group
-    -> sudo yum install java-21-openjdk -y
+    -> echo "Bl@kW" | sudo -S yum install java-21-openjdk -y
     -> sudo chown -R natasha:natasha /var/www/html
 
 add known_hosts to the Jenkins master node

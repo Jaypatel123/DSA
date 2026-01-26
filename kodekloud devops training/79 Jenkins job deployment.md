@@ -35,12 +35,22 @@ Note:
 
 ######## Solution ########
 
-Install jenkins plugins ssh, SSH Credentials, SSH Build Agents, Pipeline, git, github, gitea, 
+update jenkins:
+manage jenkins > plugins > updates > check all plugins > click Install > restart jenkins
 
-Add all app servers credentials steve, banner, tony and natasha,
+Install necessary plugins:
+manage jenkins > plugins > available plugins > ssh, SSH Credentials, SSH Build Agents, gitea > restart jenkins 
 
-add ssh access to all three servers steve, banner and tony
-    manage Jenkins > system > SSH remote hosts > SSH sites > add hostname, Port 22 & attach credentials for all three servers
+Add Credentials:
+manage jenkins > credentials > 
+                    steve, 
+                    banner, 
+                    tony, and 
+                    natasha,
+
+Add ssh host:
+    manage Jenkins > system > SSH > 
+                            add steve, tony, banner, natasha hostnames with Port 22 & attach credentials for all respective servers > save 
 
 Create a Job to install httpd and changing the apache port to 8080
     Job> Name: httpd > FreeStyle > Build Steps > open three seperate "Execute shell script on remote host using ssh" > for all three select tony, steve and banner in SSH sites > 

@@ -1,18 +1,18 @@
 The Nautilus DevOps team is tasked with enabling internet access for an EC2 instance running in a private subnet. This instance should be able to upload a test file to a public S3 bucket once it can access the internet. To minimize costs, the team has decided to use a NAT Instance instead of a NAT Gateway.
 
 The following components already exist in the environment:
-1) A VPC named devops-priv-vpc and a private subnet named devops-priv-subnet have been created.
-2) An EC2 instance named devops-priv-ec2 is already running in the private subnet.
-3) The EC2 instance is configured with a cron job that uploads a test file to the S3 bucket devops-nat-3535 every minute. Upload will only succeed once internet access is established.
+1) A VPC named datacenter-priv-vpc and a private subnet named datacenter-priv-subnet have been created.
+2) An EC2 instance named datacenter-priv-ec2 is already running in the private subnet.
+3) The EC2 instance is configured with a cron job that uploads a test file to the S3 bucket datacenter-nat-22363 every minute. Upload will only succeed once internet access is established.
 
 Your task is to:
 
-Create a new public subnet named devops-pub-subnet in the existing VPC.
-Launch a NAT Instance in the public subnet using an Amazon Linux 2 AMI and name it devops-nat-instance. Configure this instance to act as a NAT instance. Make sure to use a custom security group for this instance.
-After the configuration, verify that the test file devops-test.txt appears in the S3 bucket devops-nat-3535. This indicates successful internet access from the private EC2 instance via the NAT Instance.
+Create a new public subnet named datacenter-pub-subnet in the existing VPC.
+Launch a NAT Instance in the public subnet using an Amazon Linux 2 AMI and name it datacenter-nat-instance. Configure this instance to act as a NAT instance. Make sure to use a custom security group for this instance.
+After the configuration, verify that the test file datacenter-test.txt appears in the S3 bucket datacenter-nat-22363. This indicates successful internet access from the private EC2 instance via the NAT Instance.
 
 
-####### Solution ######
+####### Not working Solution ######
 
 
 Open VPC > create internet gateway > attach it to vpc
@@ -38,13 +38,35 @@ Open EC2 > launch instance >
                 destination: anywhere
     launch instance
 
-open ec2 > security group > select private instance security group > attach rule >
-                                                                    source: 0.0.0.0
-                                                                    destination: custom
-                                                                        select: public instance security group
+update source/destination 
+    go to devopso-nat-instance > Actions > Networking > change source/destination > select STOP > save
 
-open ec2 > security group > select public instance security group > attach rule >
-                                                                    source: 0.0.0.0
-                                                                    destination: custom
-                                                                        select: private instance security group                                                              
+update private subnet route table to allow all traffic from nat instance
+
+select public instance security group > attach rule >
+                                        source: 0.0.0.0
+                                        destination: custom 
+                                        select: 10.1.0.0/16 (vpc)                                                  
+
+
+
+VPC_NAME="datacenter-priv-vpc"
+PRIV_SUBNET_NAME="datacenter-priv-subnet"
+PRIV_EC2_NAME="datacenter-priv-ec2"
+PUB_SUBNET_NAME="datacenter-pub-subnet"
+NAT_INSTANCE_NAME="datacenter-nat-instance"
+S3_BUCKET="datacenter-nat-22363"
+REGION="us-east-1"
+
+
+VPC_ID=$(aws ec2 describe-vpcs \
+  --filters Name=tag:Name,Values="$VPC_NAME" \
+  --query "Vpcs[0].VpcId" \
+  --output text)
+
+PRIV_SUBNET_ID=$(aws ec2 describe-subnets \
+  --filters Name=tag:Name,Values="$PRIV_SUBNET_NAME" \
+  --query "Subnets[0].SubnetId" \
+  --output text)
+
 
