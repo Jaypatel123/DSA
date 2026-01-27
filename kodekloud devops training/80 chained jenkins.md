@@ -41,3 +41,70 @@ Note:
 
 ### solution ###
 
+add Gitea server in systems
+
+create token
+
+Gitea login and attaching URL
+token_url = https://admin:112e4a2999c26d2c7065269f2477516863@8080-port-depwogus6znrtexb.labs.kodekloud.com/job/nautilus-app-deployment/build?token=jay123
+
+
+Jenkins pipeline:
+
+pipeline {
+    agent any
+    stages {
+        stage('Deploy'){
+            steps {
+                script {
+                    sh '''
+                        sshpass -p "Bl@kW" ssh -o StrictHostKeyChecking=no natasha@ststor01 bash -c "'
+                            echo "Bl@kW" | sudo -S rm -rf /tmp/web
+                            echo "Bl@kW" | sudo -S git clone -b master http://git.stratos.xfusioncorp.com/sarah/web.git /tmp/web
+                            echo "Bl@kW" | sudo -S chown -R natasha:natasha /var/www/html
+                            echo "Bl@kW" | sudo -S rm -rf /var/www/html/*.html
+                            echo "Bl@kW" | sudo -S cp /tmp/web/*.html /var/www/html/
+                            ls -al /tmp/web/
+                        '"
+                    '''
+                }
+            }
+        }
+        stage('restart tony') {
+            steps {
+                script {
+                    sh '''
+                        sshpass -p "Ir0nM@n" ssh -o StrictHostKeyChecking=no tony@stapp01 bash -c "'
+                            echo "Ir0nM@n" | sudo -S systemctl restart httpd
+                            echo "Ir0nM@n" | sudo -S systemctl enable httpd
+                        '"
+                    '''
+                }
+            }    
+        }
+        stage('restart steve') {
+            steps {
+                script {
+                    sh '''
+                        sshpass -p "Am3ric@" ssh -o StrictHostKeyChecking=no steve@stapp02 bash -c "'
+                            echo "Am3ric@" | sudo -S systemctl restart httpd
+                            echo "Am3ric@" | sudo -S systemctl enable httpd
+                        '"
+                    '''
+                }
+            }
+        }
+        stage('restart banner') {
+            steps {
+                script {
+                    sh '''
+                        sshpass -p "BigGr33n" ssh -o StrictHostKeyChecking=no banner@stapp03 bash -c "'
+                            echo "BigGr33n" | sudo -S systemctl restart httpd
+                            echo "BigGr33n" | sudo -S systemctl enable httpd
+                        '"
+                    '''
+                }
+            }
+        }
+    }
+}
