@@ -78,17 +78,38 @@ Create a Job to install httpd and changing the apache port to 8080
             echo "BigGr33n" | sudo -S systemctl enable httpd
             echo "BigGr33n" | sudo -S systemctl status httpd
 
+
+Go to Manage Jenkins > System > Gitea Servers:
+                Add Gitea server
+                name: gitea, url: gitea link example -> (https://80-port-rzsgexd7vuowammh.labs.kodekloud.com)
+
+Create api token:
+Manage Jenkins > Users > Admin > Security
+                Generate API Token
+                Copy token
+
 create a Freestyle job
-    home page > new Item > name: nautilus-app-deployment > freestyle > select git add repo from gitia > check mark "GitHub hook trigger for GITScm polling"
+    name: nautilus-app-deployment
+
+    Trigger: Build trigger remotely:
+        BUILD TOKEN: jay123, anything you like
 
     Build Steps > Execute shell script on remote host using ssh > add below script
         
         echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
         echo "Bl@kW" | sudo -S git clone -b master http://git.stratos.xfusioncorp.com/sarah/web.git /tmp/web-app
+        echo "Bl@kW" | sudo -S chown -R natasha:natasha /var/www/html/
         echo "Bl@kW" | sudo -S rm -rf /var/www/html/*.html
         echo "Bl@kW" | sudo -S cp /tmp/web-app/*.html /var/www/html/
-        echo "Bl@kW" | sudo -S chown -R sarah:sarah /var/www/html/
         echo "Bl@kW" | sudo -S rm -rf /tmp/web-app
 
-    on the github/Gitia
-        go to repo setting > webhooks > Target: url http://jenkins.stratos.xfusioncorp.com:8080/github-webhook/
+on the Gitea
+    go to repo setting > webhooks > gitea > 
+    Target URL: https://admin:api-token@jenkins-url/job/nautilus-app-deployment/build?token=kodekloud
+    Example: https://admin:111780a7686891d8ba2d04851cad9cfee6@8080-port-g32m7j4t4bbbm7lp.labs.kodekloud.com/job/nautilus-app-deployment/build?token=jay123
+
+Save and Test Delivery
+    Login into storage server 
+    sudo su - sarah
+    cd /home/sarah/web
+    Modify index.html and push
