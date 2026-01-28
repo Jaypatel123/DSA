@@ -41,12 +41,14 @@ Note:
 
 ### solution ###
 
+
+
 add Gitea server in systems
 
 create token
 
 Gitea login and attaching URL
-token_url = https://admin:112e4a2999c26d2c7065269f2477516863@8080-port-depwogus6znrtexb.labs.kodekloud.com/job/nautilus-app-deployment/build?token=jay123
+token_url = https://admin:112e4a2999c26065269f2477516863@8080-port-depwogus6znrb.labs.kodekloud.com/job/nautilus-app-deployment/build?token=jay123
 
 
 Jenkins pipeline:
