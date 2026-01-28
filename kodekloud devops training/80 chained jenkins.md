@@ -41,14 +41,59 @@ Note:
 
 ### solution ###
 
+Update plugins and restart jenkins
 
+Install following plugins: Git, SSH, ssh credentials
+
+Add credentials for all 3 app server
+
+Add SSH Server:
+Goto Manage Jenkins > System > SSH Remote server > Add Servers
+
+Create primary deployment JOb:
+    Job Name: nautilus-app-deployment
+    Type: Freestyle Project
+    SCM: GIT
+
+    Add Repository URL
+    Build Steps:
+        Shell Execute, and add this line:
+            sshpass -p "Bl@kW" scp -r -o StrictHostKeyChecking=no ./* natasha@ststor01:/var/www/html
+
+Create Another Job: manage-services
+    job name: manage-services
+    Triggers > Build after other projects are built > add: nautilus-app-deployment > select: Trigger only if build is stable
+    Build Steps: create 3 build steps of Execute shell script on remote host using ssh
+
+    For each build step, select each app servers and execution command:
+    echo 'app-server-password' | sudo -S systemctl restart httpd
+    Goto nautilus-app-deployment job and add post build action:
+
+
+
+Now build nautilus-app-deployment job, once it build successfully manage-services will start building automatically.
+
+Reload app link
+
+
+
+
+
+
+
+
+
+
+
+
+plugins download: Gitea, Pipeline, SSH, ssh credentials
 
 add Gitea server in systems
 
 create token
 
 Gitea login and attaching URL
-token_url = https://admin:112e4a2999c26065269f2477516863@8080-port-depwogus6znrb.labs.kodekloud.com/job/nautilus-app-deployment/build?token=jay123
+token_url = https://admin:11465db752d04a74402e6576eb4c75ca7b@8080-port-gflfnb4djgle7ybt.labs.kodekloud.com/job/nautilus-app-deployment/build?token=jay123
 
 
 Jenkins pipeline:
