@@ -40,3 +40,46 @@ For these kind of scenarios requiring changes to be done in a web UI, please tak
 
 ###### solution #####
 
+1) Update jenkins plugins and restart
+
+2) Install plugins - Pipeline 
+
+3) create New Pipeline named deploy-job
+
+pipeline {
+    agent any
+    stages {
+        stage('Deploy'){
+            steps {
+                script {
+                    sh '''
+                        sshpass -p "Bl@kW" ssh -o StrictHostKeyChecking=no natasha@ststor01 bash -c "'
+                            echo "Bl@kW" | sudo -S rm -rf /tmp/web
+                            echo "Bl@kW" | sudo -S git clone -b master http://git.stratos.xfusioncorp.com/sarah/web.git /tmp/web
+                            echo "Bl@kW" | sudo -S chown -R natasha:natasha /var/www/html
+                            echo "Bl@kW" | sudo -S rm -rf /var/www/html/*.html
+                            echo "Bl@kW" | sudo -S cp /tmp/web/*.html /var/www/html/
+                            ls -al /tmp/web/
+                        '"
+                    '''
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                sh '''
+                    echo "Testing application accessibility..."
+
+                    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://stlb01:8091)
+    
+                    if [ "$HTTP_CODE" -ne 200 ]; then
+                        echo "Application is NOT accessible. HTTP code: $HTTP_CODE"
+                        exit 1
+                    fi
+    
+                    echo "Application is accessible. HTTP code: $HTTP_CODE"
+                '''
+            }    
+        }
+    }
+}
