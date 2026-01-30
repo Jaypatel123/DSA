@@ -47,26 +47,3 @@ select public instance security group > attach rule >
                                         source: 0.0.0.0
                                         destination: custom 
                                         select: 10.1.0.0/16 (vpc)                                                  
-
-
-
-VPC_NAME="datacenter-priv-vpc"
-PRIV_SUBNET_NAME="datacenter-priv-subnet"
-PRIV_EC2_NAME="datacenter-priv-ec2"
-PUB_SUBNET_NAME="datacenter-pub-subnet"
-NAT_INSTANCE_NAME="datacenter-nat-instance"
-S3_BUCKET="datacenter-nat-22363"
-REGION="us-east-1"
-
-
-VPC_ID=$(aws ec2 describe-vpcs \
-  --filters Name=tag:Name,Values="$VPC_NAME" \
-  --query "Vpcs[0].VpcId" \
-  --output text)
-
-PRIV_SUBNET_ID=$(aws ec2 describe-subnets \
-  --filters Name=tag:Name,Values="$PRIV_SUBNET_NAME" \
-  --query "Subnets[0].SubnetId" \
-  --output text)
-
-
