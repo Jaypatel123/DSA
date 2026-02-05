@@ -19,7 +19,6 @@ stapp02 ansible_user=steve ansible_ssh_pass=Am3ric@ ansible_ssh_common_args='-o 
 stapp03 ansible_user=banner ansible_ssh_pass=BigGr33n ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 
-
 playbook
 - name: Copy file to all application servers
   hosts: app_servers

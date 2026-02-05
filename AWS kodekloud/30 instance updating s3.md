@@ -46,4 +46,6 @@ update private subnet route table to allow all traffic from nat instance
 select public instance security group > attach rule >
                                         source: 0.0.0.0
                                         destination: custom 
-                                        select: 10.1.0.0/16 (vpc)                                                  
+                                        select: 10.1.0.0/16 (vpc)
+
+                                              
