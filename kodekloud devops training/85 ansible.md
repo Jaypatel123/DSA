@@ -16,7 +16,7 @@ d. Ensure the user/group owner of the /usr/src/nfsdata.txt file is tony on app s
 Note: Validation will execute the playbook using the command ansible-playbook -i inventory playbook.yml, so ensure the playbook functions correctly without any additional arguments.
 
 
-##### sollution #####
+##### solution #####
 
 inventory
     [app_servers]
@@ -24,7 +24,30 @@ inventory
     stapp02 ansible_user=steve ansible_ssh_pass=Am3ric@ ansible_ssh_common_args='-o StrictHostKeyChecking=no'
     stapp03 ansible_user=banner ansible_ssh_pass=BigGr33n ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
-ansible -i inventory app_servers -m ping
+#### VERIFY ####
+CMD: ansible -i inventory app_servers -m ping
+    
+    stapp03 | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python3"
+        },
+        "changed": false,
+        "ping": "pong"
+    }
+    stapp01 | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python3"
+        },
+        "changed": false,
+        "ping": "pong"
+    }
+    stapp02 | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python3"
+        },
+        "changed": false,
+        "ping": "pong"
+    }
 
 playbook.yml
   - name: create a black file
@@ -32,16 +55,20 @@ playbook.yml
     become: yes
 
     tasks:
-        - name: Ensure destination directory exists
-        file:
-            path: /usr/src/
-            state: directory
-            mode: '0755'
-        - name: Create empty file
+    - name: Ensure destination directory exists
+        file: 
+          path: /usr/src/
+          state: directory
+          mode: '0755'
+    - name: Create empty file
         ansible.builtin.file:
-            path: /usr/src/nfsdata.txt
-            state: touch
-            mode: '0755'
+          path: /usr/src/nfsdata.txt
+          state: touch
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: '0755'
 
 
 ansible-playbook -i inventory playbook.yml
+
+ERROR: /usr/src/nfsdata.txt file's owner is not what is been asked 
