@@ -24,31 +24,9 @@ inventory
     stapp02 ansible_user=steve ansible_ssh_pass=Am3ric@ ansible_ssh_common_args='-o StrictHostKeyChecking=no'
     stapp03 ansible_user=banner ansible_ssh_pass=BigGr33n ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
-#### VERIFY ####
-CMD: ansible -i inventory app_servers -m ping
-    
-    stapp03 | SUCCESS => {
-        "ansible_facts": {
-            "discovered_interpreter_python": "/usr/bin/python3"
-        },
-        "changed": false,
-        "ping": "pong"
-    }
-    stapp01 | SUCCESS => {
-        "ansible_facts": {
-            "discovered_interpreter_python": "/usr/bin/python3"
-        },
-        "changed": false,
-        "ping": "pong"
-    }
-    stapp02 | SUCCESS => {
-        "ansible_facts": {
-            "discovered_interpreter_python": "/usr/bin/python3"
-        },
-        "changed": false,
-        "ping": "pong"
-    }
+Verify CMD: ansible -i inventory app_servers -m ping
 
+# Create playbook names playbook.ymls
 playbook.yml
   - name: create a black file
     hosts: app_servers
