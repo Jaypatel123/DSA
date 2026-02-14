@@ -28,25 +28,22 @@ Verify CMD: ansible -i inventory app_servers -m ping
 
 # Create playbook names playbook.ymls
 playbook.yml
-  - name: create a black file
-    hosts: app_servers
-    become: yes
+- name: create black file
+  hosts: app_servers
+  become: yes
+  tasks:
+    - name: ensure desination file exists
+      file:
+        path: /opt
+        state: directory
 
-    tasks:
-    - name: Ensure destination directory exists
-        file: 
-          path: /usr/src/
-          state: directory
-          mode: '0755'
-    - name: Create empty file
-        ansible.builtin.file:
-          path: /usr/src/nfsdata.txt
-          state: touch
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
-          mode: '0755'
+    - name: create empty file
+      file:
+        path: /opt/nfsdata.txt
+        state: touch
+        mode: '0655'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
 
 
 ansible-playbook -i inventory playbook.yml
-
-ERROR: /usr/src/nfsdata.txt file's owner is not what is been asked 
