@@ -37,24 +37,45 @@ ii. Do not use any custom or empty marker for blockinfile module.
 
 1) cd /ansible/playbook.yml
 
-2) create playbook  
-playbook.yml
-      - name: Install httpd
-        hosts: app_servers
-        become: yes
-        vars:
-            httpd_package: httpd
-            httpd_service: httpd
-        tasks:
-            - name: Install httpd
-            package:
-                name: "{{ httpd_package }}"
-                state: present
-            - name: Start httpd
-            service:
-                name: "{{ httpd_service }}"
-                state: started
-                enabled: yes
+2) add this in inventory file
+[app_servers]
+stapp01 ansible_host=stapp01 ansible_ssh_pass=Ir0nM@n ansible_user=tony
+stapp02 ansible_host=stapp02 ansible_ssh_pass=Am3ric@ ansible_user=steve
+stapp03 ansible_host=stapp03 ansible_ssh_pass=BigGr33n ansible_user=banner
 
-3) give access to execute to playbook.yml
+3) create playbook  
+playbook.yml
+- name: Install httpd
+  hosts: app_servers
+  become: yes
+  vars:
+    httpd_package: "{{ 'httpd' if ansible_facts['os_family'] == 'RedHat' else 'apache2' }}"
+    httpd_service: httpd
+  tasks:
+    - name: Install httpd
+      package:
+        name: "{{ httpd_package }}"
+        state: present
+    - name: Start httpd
+      service:
+        name: "{{ httpd_service }}"
+        state: started
+        enabled: yes
+    - name: Add some contect to index.html
+      blockinfile:
+        path: /var/www/html/index.html
+        block: |
+          Welcome to XfusionCorp!
+          This is  Nautilus sample file, created using Ansible!
+          Please do not modify this file manually!
+        create: yes
+        group: apache
+        owner: apache
+        mode: '0744'
+
+4) give access to execute to playbook.yml
+
 run CMD: chmod 744 playbook.yml
+
+5) Run and check everything works
+ansible-playbook -i inventory playbook.yml
