@@ -53,7 +53,7 @@ variable "instance_name" {
 }
 
 
-# output.tf
+# outputs.tf
 output "KKE_vpc_name" {
     value = aws_vpc.vpc.tags["Name"]
 }
@@ -77,7 +77,7 @@ resource "aws_vpc" "vpc" {
 resource "aws_subnet" "private_subnet" {
     vpc_id = aws_vpc.vpc.id
     cidr_block = var.KKE_SUBNET_CIDR
-
+    map_public_ip_on_launch = false
     tags = {
         Name = var.priv_sub_name
     }
@@ -102,9 +102,7 @@ resource "aws_instance" "private_instance" {
     subnet_id = aws_subnet.private_subnet.id
     instance_type = "t2.micro"
     vpc_security_group_ids = [aws_security_group.private_security_group.id]
-    associate_public_ip_address = false
     tags = {
         Name = var.instance_name
     }
 }
-
