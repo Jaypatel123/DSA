@@ -29,7 +29,7 @@ Right-click under the EXPLORER section in VS Code and select Open in Integrated 
 Before submitting the task, ensure that terraform plan returns No changes. Your infrastructure matches the configuration.
 
 
-### solution 
+### solution ###
 
 # variables.tf
 variable "vpc_name" {
@@ -93,7 +93,7 @@ resource "aws_security_group" "private_security_group" {
         from_port = 0
         to_port = 0
         protocol = "-1"
-        cidr_blocks = [aws_subnet.private_subnet.cidr_block]
+        cidr_blocks = [aws_vpc.vpc.cidr_block]
     }
 }
 
