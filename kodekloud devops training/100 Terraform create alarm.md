@@ -43,12 +43,14 @@ resource "aws_cloudwatch_metric_alarm" "cpu_alarm" {
   alarm_name = var.KKE_alarm_name
   statistic = "Average"
   metric_name = "CPUUtilization"
-  Threshold = 90
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  threshold = 90
   period = 300
   evaluation_periods = 1
   actions_enabled = "true"
   alarm_actions = [aws_sns_topic.sns_topic.arn]
 }
+
 
 # variables.tf
 variable "KKE_instance_name" {
