@@ -15,21 +15,55 @@ Verify that a log entry has been created in the DynamoDB table containing the fi
 1) Create public s3 bucket 
 - disable ACLs
 - uncheck all public access points
-- attach policy 
+- attach policy to give public bucket to access from outside
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "PublicReadGetObject",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::xfusion-public-10837/*"
-    }
-  ]
+    "Version": "2012-10-17",
+    "Statement": [ 
+        {
+            "Action": "s3:GetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Resource": "arn:aws:s3:::xfusion-public-23959/*"
+        }
+    ]
 }
-
 2) Create private s3 bucket
+- attach policy
 
+3) create DynamoDB
+
+4) create IAM fine-grained least priviledge policies to 
+- get file from public s3
+- put file to private s3
+- store lamdba generated logs to dynamodb such as 
+    - source bucket name, 
+    - destination bucket name and 
+    - object key
+
+5) create a IAM role for lamdba
+- attach all the policies above created
+
+6) create lamdba function
+- use python
+
+3) Create policies for 
 3) Create IAM Role for lambda
 - Attach policies AWSLambdaBasicExecutionRole, AmazonS3FullAccess
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "LamdbaPutOnly",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::347203241848:role/lambda_execution_role"
+            },
+            "Action": [
+                "s3:PutObject"
+            ],
+            "Resource": [ "arn:aws:s3:::datacenter-private-23433", "arn:aws:s3:::datacenter-private-23433/*" ]
+        }
+    ]
+}
