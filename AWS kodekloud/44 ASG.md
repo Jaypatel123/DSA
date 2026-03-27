@@ -23,4 +23,3 @@ sudo systemctl start nginx
 sudo systemctl enable nginx
     # configure security group of accept http:80 from ALB security group
 ## 4) auto scaling group 
-   
