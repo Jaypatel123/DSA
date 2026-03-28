@@ -13,57 +13,190 @@ Verify that a log entry has been created in the DynamoDB table containing the fi
 ## solution
 
 1) Create public s3 bucket 
-- disable ACLs
 - uncheck all public access points
 - attach policy to give public bucket to access from outside
 {
     "Version": "2012-10-17",
-    "Statement": [ 
+    "Statement": [
         {
-            "Action": "s3:GetObject",
             "Effect": "Allow",
             "Principal": "*",
-            "Resource": "arn:aws:s3:::xfusion-public-23959/*"
+            "Action": "s3:GetObject",
+            "Resource": [
+                "arn:aws:s3:::datacenter-public-25695/*",
+                "arn:aws:s3:::datacenter-public-25695"
+            ]
         }
     ]
 }
 2) Create private s3 bucket
-- attach policy
 
-3) create DynamoDB
+3) IF NOT CREATED  
+    - create DynamoDB
 
-4) create IAM fine-grained least priviledge policies to 
-- get file from public s3
-- put file to private s3
-- store lamdba generated logs to dynamodb such as 
-    - source bucket name, 
-    - destination bucket name and 
-    - object key
-
-5) create a IAM role for lamdba
-- attach all the policies above created
-
-6) create lamdba function
-- use python
-
-3) Create policies for 
-3) Create IAM Role for lambda
-- Attach policies AWSLambdaBasicExecutionRole, AmazonS3FullAccess
-
-
+4) create IAM fine-grained least priviledge policy 
+    - Get access to s3 bucket public
+    - Put access to s3 bucket private
+    - Put access to Dynamodb table
 {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "LamdbaPutOnly",
+            "Sid": "Statement1",
             "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::347203241848:role/lambda_execution_role"
-            },
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::datacenter-public-25695/*",
+                "arn:aws:s3:::datacenter-public-25695"
+            ]
+        },
+        {
+            "Sid": "Statement2",
+            "Effect": "Allow",
             "Action": [
                 "s3:PutObject"
             ],
-            "Resource": [ "arn:aws:s3:::datacenter-private-23433", "arn:aws:s3:::datacenter-private-23433/*" ]
+            "Resource": [
+                "arn:aws:s3:::datacenter-private-12293/*",
+                "arn:aws:s3:::datacenter-private-12293"
+            ]
+        },
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "dynamodb:PutItem",
+            "Resource": "arn:aws:dynamodb:*:*:table/datacenter-S3CopyLogs"
         }
     ]
 }
+
+5) create a IAM role for lamdba
+# attach all the policies created above: s3publicxfusion, s3privatexfusion, dynamodbxfusion
+
+6) create lambda function
+# use python language
+# Copy lambda code from aws-client and paste it to lamdba function area
+    # make sure to update the dynamodb table & private s3 bucket name
+    -> DEPLOY 
+
+7) Add S3 Trigger
+# Lambda → copyfunction
+    → Configuration Tab → Triggers → Add Trigger
+# Trigger Source : S3
+# Bucket         : my-public-bucket-12345  ← public bucket
+# Event Type     : PUT
+# Prefix         : (leave empty)
+# Suffix         : (leave empty)
+→ Check acknowledge warning box ✅
+→ Click "Add"
+
+## **Check Trigger on Lambda:**
+Lambda → copyfunction → Configuration → Triggers
+Should show:
+    Source  : S3
+    Bucket  : my-public-bucket-12345
+    Event   : ObjectCreated (PUT) ✅
+
+## **Check Event on S3:**
+S3 → my-public-bucket-12345
+    → Properties Tab → Event Notifications
+Should show:
+    Name        : (auto generated)
+    Events      : PUT
+    Destination : copyfunction (Lambda) ✅
+
+## UPLOAD file and check 
+aws s3 cp sample.zip s3://xfusion-public-653
+
+## Verify DynamoDB entry
+aws dynamodb scan --table-name datacenter-S3CopyLogs
+
+
+
+
+# Given lambda function kept it just for reference
+import json
+import boto3
+from datetime import datetime
+import uuid
+
+# Initialize the S3 and DynamoDB clients
+s3 = boto3.client('s3')
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('datacenter-S3CopyLogs')
+
+def lambda_handler(event, context):
+    try:
+        # Get the source bucket and object key from the event
+        source_bucket = event['Records'][0]['s3']['bucket']['name']
+        object_key = event['Records'][0]['s3']['object']['key']
+
+        # Hardcoded destination bucket name
+        destination_bucket = "datacenter-private-12293"
+
+        # Log the event details for debugging
+        print(f"[INFO] Source bucket: {source_bucket}, Object key: {object_key}")
+        print(f"[INFO] Destination bucket: {destination_bucket}")
+
+        # Copy the file from source bucket to destination bucket
+        copy_source = {
+            'Bucket': source_bucket,
+            'Key': object_key
+        }
+
+        print(f"[INFO] Attempting to copy object from {source_bucket}/{object_key} to {destination_bucket}/{object_key}")
+        s3.copy_object(
+            CopySource=copy_source,
+            Bucket=destination_bucket,
+            Key=object_key
+        )
+        print(f"[INFO] File successfully copied from {source_bucket}/{object_key} to {destination_bucket}/{object_key}")
+
+        # Create log entry for DynamoDB
+        log_entry = {
+            'LogID': str(uuid.uuid4()),  # Generate a unique ID for the log entry
+            'SourceBucket': source_bucket,
+            'DestinationBucket': destination_bucket,
+            'ObjectKey': object_key,
+            'Timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'Status': 'Success'
+        }
+
+        # Log the log entry before attempting to write to DynamoDB
+        print(f"[INFO] Writing the following log entry to DynamoDB:\n{json.dumps(log_entry, indent=4)}")
+        table.put_item(Item=log_entry)
+        print(f"[INFO] Successfully wrote log entry to DynamoDB")
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps(f"File successfully copied to {destination_bucket}")
+        }
+
+    except Exception as e:
+        # Store error log in DynamoDB in case of failure
+        log_entry = {
+            'LogID': str(uuid.uuid4()),  # Generate a unique ID for the log entry
+            'SourceBucket': source_bucket,
+            'DestinationBucket': destination_bucket,
+            'ObjectKey': object_key,
+            'Timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'Status': 'Failure',
+            'Error': str(e)
+        }
+
+        # Log the error log entry before attempting to write to DynamoDB
+        print(f"[ERROR] Writing the following error log entry to DynamoDB:\n{json.dumps(log_entry, indent=4)}")
+        try:
+            table.put_item(Item=log_entry)
+            print(f"[INFO] Successfully wrote error log entry to DynamoDB")
+        except Exception as db_error:
+            print(f"[ERROR] Failed to write error log entry to DynamoDB: {str(db_error)}")
+
+        # Log the error in CloudWatch
+        print(f"[ERROR] Error during file copy or DynamoDB operation: {str(e)}")
+        return {
+            'statusCode': 500,
+            'body': json.dumps(f"Error copying file: {str(e)}")
+        }
