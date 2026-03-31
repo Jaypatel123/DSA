@@ -186,6 +186,9 @@ Resources:
       BatchSize: 1
       Enabled: true
 
+Outputs:
+  SNSTopicARN:
+    Value: !Ref PriorityQueuesTopic
 
 ## Create CloudFormation Stack
 aws cloudformation create-stack \
