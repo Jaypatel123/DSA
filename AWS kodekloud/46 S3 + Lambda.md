@@ -31,8 +31,7 @@ Verify that a log entry has been created in the DynamoDB table containing the fi
 }
 2) Create private s3 bucket
 
-3) IF NOT CREATED  
-    - create DynamoDB
+3) create DynamoDB
 
 4) create IAM fine-grained least priviledge policy 
     - Get access to s3 bucket public
