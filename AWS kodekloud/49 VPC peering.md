@@ -40,27 +40,30 @@ The uploaded file must be stored in the S3 bucket under the path xfusion-priv-vp
   name: give-internet-to-private-subnet
   VPC: xfusion-priv-vpc
 
-####### Wait 2-3 min for nat gatway to spin-up ####
+# To Verify NAT gateway
+####### Wait 2-3 min for nat gatway to spin-up #######
+
+# Update private route table
+    - xfusion-priv-rt -> add route -> 0.0.0.0 Nat gatway (give-internet-to-private-subnet) 
 
 # Create Route tables
     1) Name: xfusion-pub-rt
        VPC: xfusion-pub-vpc
        Rules:
-            - 0.0.0.0 - internet-gatway (xfusion-pub-IG)
+            - 0.0.0.0 - internet-gateway (xfusion-pub-IG)
 
     2) Name: public-nat-for-xfusion
        VPC: xfusion-priv-vpc
        Rules:
-            - 0.0.0.0 - internet-gatway (public-nat-access)
+            - 0.0.0.0 - internet-gateway (public-nat-access)
 
 # Associate route tables to subnetes
-    1) Name: xfusion-pub-rt -> Edit Association Rules -> add -> xfusion-pub-subnet
-    2) Name: public-nat-for-xfusion -> Edit Association Rules -> add -> public-nat-access
-
-# Update private route table
-    - xfusion-priv-rt -> add route -> 0.0.0.0 Nat gatway (give-internet-to-private-subnet)
+    1) Name: xfusion-pub-rt -> Subnet Associations -> Edit routes -> xfusion-pub-subnet
+    2) Name: public-nat-for-xfusion -> Subnet Associations -> Edit routes -> public-nat-access
 
 # Create ec2 instance in this public VPC and subnet 
+    - Name: xfusion-pub-ec2
+    - Key: xfusion-key
     - VPC: xfusion-pub-vpc
     - subnet: xfusion-pub-subnet
     - Auto-assign public IP: Enable
@@ -75,17 +78,30 @@ The uploaded file must be stored in the S3 bucket under the path xfusion-priv-vp
 # create policy
   name: s3Putobject
   json:
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "VisualEditor0",
+                "Effect": "Allow",
+                "Action": "s3:PutObject",
+                "Resource": "arn:aws:s3:::xfusion-s3-logs-24896/*"
+            }
+        ]
+    }
 
 
 # Create EC2 Role attaching this policy
     name: xfusion-s3-role
 
 # attach this role to EC2
-    - ec2 -> xfusion-pub-ec2 -> select -> action -> action -> edit IAM -> select xfusion-s3-role
+    - ec2 -> xfusion-pub-ec2 -> select -> actions -> security -> Modify Iam role -> xfusion-s3-role -> update
 
-# Connect both VPC with VPC peering
-    -> AWS console -> VPC -> peering connection -> Create VPC peering
-    -> keep requester as public vpc and accepter as private vpc
+# Create VPC Peering connection
+    -> Name: xfusion-vpc-peering
+       Requester: xfusion-pub-vpc
+       Acceptor: xfusion-priv-vpc
+    xfusion-vpc-peering -> Actions -> Accept request
 
 # configure route table of both the vpc to accept the VPC's CIDR 
     - AWS Console -> VPC A -> copy CIDR VPC A (Eg: 10.10.0.0/16)
@@ -95,10 +111,10 @@ The uploaded file must be stored in the S3 bucket under the path xfusion-priv-vp
     -> AWS console -> VPC A -> VPC A subnet -> route table -> 10.1.0.0/16 - vpc peering
 
 # Copy key to xfusion-pub-ec2 from aws-client
-    - scp -i .ssh/xfusion-key.pem .ssh/xfusion-key.pem ubuntu@98.94.61.55:/home/ubuntu/xfusion-key.pem
+    - scp -i .ssh/xfusion-key.pem .ssh/xfusion-key.pem ubuntu@<public_instance_IP>:/home/ubuntu/xfusion-key.pem
 
 # ssh into xfusion-pub-ec2 from aws-client
-    - ssh -i .ssh/xfusion-key.pem ubuntu@98.94.61.55
+    - ssh -i .ssh/xfusion-key.pem ubuntu@<public_instance_IP>
     
     # Copy key to xfusion-priv-ec2 from xfusion-pub-ec2
     - scp -i xfusion-key.pem xfusion-key.pem ubuntu@<PrivateIP>:/home/ubuntu/xfusion-key.pem
@@ -107,8 +123,14 @@ The uploaded file must be stored in the S3 bucket under the path xfusion-priv-vp
     - ssh -i xfusion-key.pem ubuntu@<PrivateSubnetIP>
 
 # check internet is accessible from private instance
-    - ping www.google.com 
-    # you will see output appearing in your terminal every second
+- ping www.google.com 
+    # you should see output like this 
+        PING www.google.com (142.251.154.119) 56(84) bytes of data.
+        64 bytes from 142.251.154.119 (142.251.154.119): icmp_seq=1 ttl=115 time=1.93 ms
+        64 bytes from 142.251.154.119 (142.251.154.119): icmp_seq=2 ttl=115 time=1.10 ms
+        64 bytes from 142.251.154.119 (142.251.154.119): icmp_seq=3 ttl=115 time=1.09 ms
+        64 bytes from 142.251.154.119 (142.251.154.119): icmp_seq=4 ttl=115 time=1.09 ms
+        64 bytes from 142.251.154.119 (142.251.154.119): icmp_seq=5 ttl=115 time=1.10 ms
 
 # Create a script in private instance
 - nano send_log.sh
@@ -134,7 +156,7 @@ scp -i $KEY $SRC $DEST
 - nano send_to_s3.sh
 #!/bin/bash
 FILE="/home/ubuntu/boots.log"
-BUCKET="s3://xfusion-s3-logs-6972/xfusion-priv-vpc/boot"
+BUCKET="s3://xfusion-s3-logs-6972/xfusion-priv-vpc/boot/"
 aws s3 cp $FILE $BUCKET
 
 # make executable script
