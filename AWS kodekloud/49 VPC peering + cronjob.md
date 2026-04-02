@@ -171,6 +171,3 @@ aws s3 cp $FILE $BUCKET
     - tail -f /home/ubuntu/cron.log  #Check logs
 
 
-
-
-
