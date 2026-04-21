@@ -33,11 +33,11 @@ Filesystem      Size  Used Avail Use% Mounted on
 
 👉 If this still shows 8G, your filesystem is NOT expanded yet.
 
-# Expand partition (if needed)
-    # For most modern EC2 (Amazon Linux / Ubuntu):
-        sudo growpart /dev/xvda 1
-    # OR (NVMe-based instances):
-        sudo growpart /dev/nvme0n1 1
+# Expand partition
+# For most modern EC2 (Amazon Linux / Ubuntu):
+    sudo growpart /dev/xvda 1
+# OR (NVMe-based instances):
+    sudo growpart /dev/nvme0n1 1
 
 # Expand filesystem
 If using XFS (Amazon Linux 2 default):
